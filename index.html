@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>noty</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Christian Pichler" />
+<link href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet">
+</head>
+<style>
+#notificationbox{
+    display: flex;
+    flex-direction: column-reverse;
+    gap:5px;
+    padding: 5px;
+    z-index: 9999;
+    overflow:hidden;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+}
+.notification {
+    opacity: 0;
+    padding:10px 15px;
+    border-radius: 0.25rem;
+    animation-name: noty;
+    animation-duration: 5s;
+    transform: translateY(0);
+    margin-bottom:-43.6667px;
+    line-height:20px;
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.default {
+    background-color: #222;
+}
+
+.red {
+    background-color: #900;
+}
+
+@keyframes noty {
+0%   {opacity: 0;transform: translateY(50%);margin-bottom:0px;}
+10%  {opacity: 1;transform: translateY(0%);margin-bottom:0px;}
+90%  {opacity: 1;transform: translateY(0%);margin-bottom:0px;}
+100% {opacity: 0;transform: translateY(0%);margin-bottom:-43.6667px}
+}
+
+@media (min-width: 900px)
+{
+    #notificationbox {
+        width:300px;
+    }
+}
+</style>
+<body style="background-color: #565656;color:#ccc;">
+<div id="notificationbox"></div>
+<button onclick="noty('<i class=\'fa fa-cog\'></i> ' + Date.now())">This is a button</button>
+</body>
+</html>
+<script>
+let activeBars = 0;
+let boxes = [];
+
+function noty(msg, color = 'default'){
+    if(activeBars < 3)
+    {
+        activeBars++;
+        let parent = document.getElementById("notificationbox");
+        let box = document.createElement("div");
+        box.innerHTML = msg;
+        box.className = "notification " + color;
+        parent.appendChild(box);
+
+        setTimeout(() => {
+            activeBars--;
+            box.style.display = "none";
+            if(boxes.length != 0)
+            {
+                noty(boxes[0][0], boxes[0][1]);
+                boxes.shift();
+            }
+        },5000);
+    }
+    else
+    {
+        boxes.push([msg, color]);
+    }
+}
+
+</script>
